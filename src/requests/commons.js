@@ -5,15 +5,12 @@
 
 export const request = async () => {
 	try {
-		const result = await fetch(
-			`https://geocode-maps.yandex.ru/1.x/?apikey=${process.env.REACT_APP_GEO}&geocode=Москва,+Арбат+улица,+дом+1&format=json`,
-			{
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+		const result = await fetch(` `, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
 			},
-		);
+		});
 
 		const data = await result.json();
 

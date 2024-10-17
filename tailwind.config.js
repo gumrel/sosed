@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-	important: true,
-	content: ['./src/**/*.{js,jsx,ts,tsx}'],
+export default {
+	darkMode: 'class',
+	content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}', './node_modules/primereact/**/*.{js,ts,jsx,tsx}'],
 	theme: {
 		extend: {},
 	},

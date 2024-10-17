@@ -4,13 +4,14 @@ import htttpService from '../Services/htttpService';
 
 interface ICreateAddress {
 	id: number;
-	address: string; // Адрес как строка
-	coordinates: [number, number]; // Координаты в формате массива с двумя числами [долгота, широта]
-	price: number; // Цена как число
-	rooms: number; // Количество комнат как число
-	description: string; // Описание квартиры как строка
-	detailsUrl: string; // URL страницы с деталями
-	imageUrl: string; // URL изображения
+	address: string;
+	coordinates: [number, number];
+	price: number;
+	rooms: number;
+	description: string;
+	detailsUrl: string;
+	imageUrl: string;
+	metro: string;
 }
 
 export const postMokky = async (path: ICreateAddress) => {

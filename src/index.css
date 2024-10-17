@@ -1,15 +1,3 @@
-/* @layer tailwind-base, primereact, tailwind-utilities; */
-@import 'primereact/resources/themes/lara-light-blue/theme.css';
-/* IMPORTANT: In "styled" mode you must add the PrimeReact Theme here. Do NOT include in "unstyled" mode */
-@layer tailwind-base {
-	@tailwind base;
-}
-
-@layer tailwind-utilities {
-	@tailwind components;
-	@tailwind utilities;
-}
-
-@import 'primereact/resources/primereact.min.css';
-@import 'primereact/resources/themes/mdc-light-indigo/theme.css';
-@import 'primeicons/primeicons.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

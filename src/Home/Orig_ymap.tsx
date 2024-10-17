@@ -48,6 +48,7 @@ export default function Orig() {
 		description: 'A cozy 3-room apartment near the park.',
 		detailsUrl: '/apartment/1',
 		imageUrl: '/images/apartment1.jpg',
+		metro: 'Арбатская',
 	};
 	return (
 		<div style={{ width: '100%', height: '50vh' }}>

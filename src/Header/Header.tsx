@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
 	Dialog,
 	DialogPanel,
@@ -13,6 +13,13 @@ import {
 import { Bars3Icon, ChartPieIcon, CursorArrowRaysIcon, FingerPrintIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
+
+import { ConfirmDialog } from 'primereact/confirmdialog';
+import { Dialog as PrimeDialog } from 'primereact/dialog';
+import { Divider as PrimeDivider } from 'primereact/divider';
+import { InputText as PrimeText } from 'primereact/inputtext';
+import { Button as PrimeButton } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 
 const products = [
 	{
@@ -41,9 +48,73 @@ const callsToAction = [
 
 export default function Example() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [visible, setVisible] = useState<boolean>(false);
+	const toast = useRef(null);
 
 	return (
 		<header className="bg-white">
+			<Toast ref={toast} />
+			<PrimeDialog
+				header="Войти или зарегистрироваться"
+				visible={visible}
+				style={{ width: '50vw' }}
+				onHide={() => {
+					if (!visible) return;
+					setVisible(false);
+				}}
+			>
+				<div className="card">
+					<div className="flex flex-column md:flex-row">
+						<div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
+							<div className="flex flex-wrap justify-content-center align-items-center gap-2">
+								<label className="w-6rem">Username</label>
+								<PrimeText
+									id="username"
+									type="text"
+									className="w-12rem"
+								/>
+							</div>
+							<div className="flex flex-wrap justify-content-center align-items-center gap-2">
+								<label className="w-6rem">Password</label>
+								<PrimeText
+									id="password"
+									type="password"
+									className="w-12rem"
+								/>
+							</div>
+							<PrimeButton
+								label="Login"
+								icon="pi pi-user"
+								className=" mx-auto"
+							></PrimeButton>
+						</div>
+						{/* <div className="w-full md:w-2">
+							<PrimeDivider
+								layout="vertical"
+								className="hidden md:flex"
+							>
+								<b>OR</b>
+							</PrimeDivider>
+							<PrimeDivider
+								layout="horizontal"
+								className="flex md:hidden"
+								align="center"
+							>
+								<b>OR</b>
+							</PrimeDivider>
+						</div> */}
+						{/* <div className="w-full md:w-5 flex align-items-center justify-content-center py-5">
+							<PrimeButton
+								label="Sign Up"
+								icon="pi pi-user-plus"
+								severity="success"
+								className="w-10rem"
+							></PrimeButton>
+						</div> */}
+					</div>
+				</div>
+			</PrimeDialog>
+
 			<nav
 				aria-label="Global"
 				className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
@@ -153,12 +224,12 @@ export default function Example() {
 				</PopoverGroup>
 
 				<div className="md:hidden  lg:flex lg:flex-1 lg:justify-end">
-					<a
-						href="/login"
-						className="text-sm font-semibold leading-6 text-gray-900"
+					<p
+						onClick={() => setVisible(true)}
+						className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer"
 					>
 						Log in
-					</a>
+					</p>
 				</div>
 			</nav>
 

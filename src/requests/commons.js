@@ -65,7 +65,7 @@ export const calculateWalkingRoute = async () => {
 
 		if (data.routes && data.routes.length > 0) {
 			const route = data.routes[0];
-			return route; // Информация о маршруте, включая время и расстояние
+			return route;
 		} else {
 			return null;
 		}

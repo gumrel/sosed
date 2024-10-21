@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState } from 'react'; //todo забыли пароль
 import {
 	Dialog,
 	DialogPanel,
@@ -10,107 +10,202 @@ import {
 	PopoverGroup,
 	PopoverPanel,
 } from '@headlessui/react';
-import { Bars3Icon, ChartPieIcon, CursorArrowRaysIcon, FingerPrintIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
+import { products, callsToAction } from './Headerconstns';
 
-import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Dialog as PrimeDialog } from 'primereact/dialog';
-import { Divider as PrimeDivider } from 'primereact/divider';
 import { InputText as PrimeText } from 'primereact/inputtext';
 import { Button as PrimeButton } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 
-const products = [
-	{
-		name: 'Rent',
-		description: 'Get a better understanding of your traffic',
-		href: '/Rent',
-		icon: ChartPieIcon,
-	},
-	{
-		name: 'Flats',
-		description: 'Speak directly to your customers',
-		href: '/Flats',
-		icon: CursorArrowRaysIcon,
-	},
-	{
-		name: 'Sales',
-		description: 'Your customers’ data will be safe and secure',
-		href: '/Sales',
-		icon: FingerPrintIcon,
-	},
-];
-const callsToAction = [
-	{ name: 'Mobile', href: '/Mobile', icon: PhoneIcon },
-	{ name: 'Telegram', href: 'https://web.telegram.org/k/', icon: PhoneIcon },
-];
+import { signUp, signIn } from '../Services/configFireBase/firebaseLogic.js';
+
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../Services/configFireBase/firebaseConfig.js';
 
 export default function Example() {
+	// onAuthStateChanged(auth, user => {
+	// 	if (user) {
+	// 		console.log(user);
+	// 	} else {
+	// 		console.log('No user is signed in');
+	// 	}
+	// });
+
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [visible, setVisible] = useState<boolean>(false);
-	const toast = useRef(null);
+	const [openReg, setReg] = useState<boolean>(false);
+	const [fakepass, setfakepass] = useState<boolean>(false);
+
+	const [mail, setMail] = useState<string>('');
+	const [pass, setPass] = useState<string>('');
+	const [pasrep, setPasrep] = useState<string>('');
+
+	const [maillog, setMaillog] = useState<string>('');
+	const [passlog, setPasslog] = useState<string>('');
+
+	const toast = useRef<Toast>(null);
+
+	const registration = async () => {
+		if (pass !== pasrep) {
+			setfakepass(true);
+			toast.current?.show({
+				severity: 'error',
+				detail: 'Пароли не совпадают',
+				life: 3000,
+			});
+			return;
+		}
+		const data = await signUp(mail, pass);
+
+		if (data.error) {
+			toast.current?.show({
+				severity: 'error',
+				detail: data.error,
+				life: 3000,
+			});
+		} else {
+			setMail('');
+			setPass('');
+			setReg(false);
+			setfakepass(false);
+			setPasrep('');
+			toast.current?.show({
+				severity: 'success',
+				detail: 'Вы успешно зарегистрировались!',
+				life: 3000,
+			});
+		}
+	};
+
+	const login = async () => {
+		const data = await signIn(maillog, passlog);
+
+		if (data.error) {
+			toast.current?.show({
+				severity: 'error',
+				detail: data.error,
+				life: 3000,
+			});
+		} else {
+			setMaillog('');
+			setPasslog('');
+			setVisible(false);
+			toast.current?.show({
+				severity: 'success',
+				detail: 'Вы успешно вошли!',
+				life: 3000,
+			});
+		}
+	};
 
 	return (
 		<header className="bg-white">
 			<Toast ref={toast} />
+
 			<PrimeDialog
-				header="Войти или зарегистрироваться"
+				header="Войти в аккаунт"
 				visible={visible}
-				style={{ width: '50vw' }}
+				style={{ width: '30rem' }}
 				onHide={() => {
 					if (!visible) return;
 					setVisible(false);
 				}}
 			>
 				<div className="card">
-					<div className="flex flex-column md:flex-row">
-						<div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
-							<div className="flex flex-wrap justify-content-center align-items-center gap-2">
-								<label className="w-6rem">Username</label>
-								<PrimeText
-									id="username"
-									type="text"
-									className="w-12rem"
-								/>
-							</div>
-							<div className="flex flex-wrap justify-content-center align-items-center gap-2">
-								<label className="w-6rem">Password</label>
-								<PrimeText
-									id="password"
-									type="password"
-									className="w-12rem"
-								/>
-							</div>
-							<PrimeButton
-								label="Login"
-								icon="pi pi-user"
-								className=" mx-auto"
-							></PrimeButton>
+					<div className="flex flex-col align-items-center justify-content-center gap-3 py-5">
+						<div className="flex flex-col">
+							<label className="w-6rem">Имя пользователя</label>
+							<PrimeText
+								id="username"
+								type="text"
+								className="w-12rem"
+								value={maillog}
+								onChange={event => setMaillog(event.target.value)}
+							/>
 						</div>
-						{/* <div className="w-full md:w-2">
-							<PrimeDivider
-								layout="vertical"
-								className="hidden md:flex"
-							>
-								<b>OR</b>
-							</PrimeDivider>
-							<PrimeDivider
-								layout="horizontal"
-								className="flex md:hidden"
-								align="center"
-							>
-								<b>OR</b>
-							</PrimeDivider>
-						</div> */}
-						{/* <div className="w-full md:w-5 flex align-items-center justify-content-center py-5">
+						<div className="flex flex-col">
+							<label className="w-6rem">Пароль</label>
+							<PrimeText
+								id="password"
+								type="password"
+								className="w-12rem"
+								value={passlog}
+								onChange={event => setPasslog(event.target.value)}
+							/>
+						</div>
+						<div className="flex justify-between">
 							<PrimeButton
-								label="Sign Up"
-								icon="pi pi-user-plus"
-								severity="success"
-								className="w-10rem"
-							></PrimeButton>
-						</div> */}
+								label="Регистрация"
+								link
+								onClick={() => {
+									setVisible(false);
+									setReg(true);
+								}}
+							/>
+
+							<PrimeButton onClick={() => login()}>Войти</PrimeButton>
+						</div>
+					</div>
+				</div>
+			</PrimeDialog>
+
+			<PrimeDialog
+				header="Зарегистрироваться"
+				visible={openReg}
+				style={{ width: '30rem' }}
+				onHide={() => {
+					if (!openReg) return;
+					setReg(false);
+				}}
+			>
+				<div className="card">
+					<div className="flex flex-col align-items-center justify-content-center gap-3 py-5">
+						<div className="flex flex-col">
+							<label className="w-6rem">Имя пользователя</label>
+							<PrimeText
+								id="username"
+								type="text"
+								className="w-12rem"
+								value={mail}
+								onChange={event => setMail(event.target.value)}
+							/>
+						</div>
+						<div className="flex flex-col">
+							<label className="w-6rem">Пароль</label>
+							<PrimeText
+								id="password"
+								type="password"
+								className="w-12rem"
+								value={pass}
+								onChange={event => setPass(event.target.value)}
+							/>
+						</div>
+						<div className="flex flex-col">
+							<label className="w-6rem">Подтвердите пароль</label>
+							<PrimeText
+								id="passwordrep"
+								type="password"
+								className="w-12rem"
+								value={pasrep}
+								onChange={event => setPasrep(event.target.value)}
+								invalid={fakepass}
+							/>
+						</div>
+						<div className="flex justify-between">
+							<PrimeButton
+								label="Логин"
+								link
+								onClick={() => {
+									setReg(false);
+									setVisible(true);
+								}}
+							/>
+
+							<PrimeButton onClick={() => registration()}>Регистрация</PrimeButton>
+						</div>
 					</div>
 				</div>
 			</PrimeDialog>
@@ -216,10 +311,10 @@ export default function Example() {
 						Marketplace
 					</a>
 					<a
-						href="/Company"
+						href="/createForm"
 						className="text-sm font-semibold leading-6 text-gray-900"
 					>
-						Company
+						Разместить объявление
 					</a>
 				</PopoverGroup>
 
@@ -228,7 +323,7 @@ export default function Example() {
 						onClick={() => setVisible(true)}
 						className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer"
 					>
-						Log in
+						Войти
 					</p>
 				</div>
 			</nav>
@@ -296,7 +391,7 @@ export default function Example() {
 									href="#"
 									className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 								>
-									Company
+									Разместить объявление
 								</a>
 							</div>
 							<div className="py-6">
@@ -304,7 +399,7 @@ export default function Example() {
 									to="/login"
 									className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 								>
-									Log in
+									Войти
 								</Link>
 							</div>
 						</div>

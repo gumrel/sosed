@@ -1,7 +1,4 @@
 import Orig from './Orig_ymap';
-import { useDispatch, useSelector } from 'react-redux';
-
-import Loader from '../Loader/Loader';
 
 const Home = () => {
 	return (
@@ -11,7 +8,7 @@ const Home = () => {
       ))} */}
 
 			<p className="mt-10 mb-10 ">Yasha maps!</p>
-			<Orig />
+			{/* <Orig /> */}
 		</div>
 	);
 };

@@ -1,7 +1,5 @@
 import htttpService from '../Services/htttpService';
 
-// https://9af78c5f5318e74a.mokky.dev/adress_coord
-
 interface ICreateAddress {
 	id: number;
 	address: string;
